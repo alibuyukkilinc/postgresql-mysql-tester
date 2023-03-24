@@ -250,7 +250,7 @@ $db = '';
 $showDetails = true;
 
 #HOW MANY DATA SHOULD ADD (100)
-$recordCount = 100;
+$recordCount = 1000;
 
 
 #DONT MAKE LOOP
@@ -259,7 +259,7 @@ if($process != 'INSERT'){
 }
 
 #DATA LIMIT
-$recordLimit = 1;
+$recordLimit = 1000;
 
 
 #----------------------------------------------------------------------------------------#
@@ -404,11 +404,11 @@ if($showDetails == true){
     $content .= $line;
     $content .= "<br>";
     $content .= '|    ';
-    $content .= "Records : ".$recordCount ." Qty";
+    $content .= "Records : <b>".$recordCount ."</b> Qty";
     $content .= $spacer;
-    $content .= "Time : ".$lastTime." Seconds";
+    $content .= "Time : <b>".$lastTime."</b> Seconds";
     $content .= $spacer;
-    $content .= "Memory : ".number_format($memory,3)." MB";
+    $content .= "Memory : <b>".number_format($memory,3)."</b> MB";
     $content .= $spacer;
     
     $content .= "<br>";
@@ -451,37 +451,37 @@ if($showDetails == true){
     <table align="center">
         <tr>
             <td>
-                <a href="?db=mysql&process=INSERT" class="button">MySQL INSERT <?php echo $recordCount; ?> Data</a>
+                <a href="?db=mysql&process=INSERT" class="button">MySQL INSERT <b><?php echo $recordCount; ?></b> Data</a>
             </td>
             <td>
-                <a href="?db=pgsql&process=INSERT" class="buttonp">PostgreSQL INSERT <?php echo $recordCount; ?> Data</a>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <a href="?db=mysql&process=SUM" class="button">MySQL SUM</a>
-            </td>
-            <td>
-                <a href="?db=pgsql&process=SUM" class="buttonp">PostgreSQL SUM</a>
+                <a href="?db=pgsql&process=INSERT" class="buttonp">PostgreSQL INSERT <b><?php echo $recordCount; ?></b> Data</a>
             </td>
         </tr>
 
         <tr>
             <td>
-                <a href="?db=mysql&process=COUNT" class="button">MySQL COUNT</a>
+                <a href="?db=mysql&process=SUM" class="button">MySQL SUM <b><?php echo $recordLimit; ?></b> Data</a>
             </td>
             <td>
-                <a href="?db=pgsql&process=COUNT" class="buttonp">PostgreSQL COUNT</a>
+                <a href="?db=pgsql&process=SUM" class="buttonp">PostgreSQL SUM <b><?php echo $recordLimit; ?></b> Data</a>
             </td>
         </tr>
 
         <tr>
             <td>
-                <a href="?db=mysql&process=LIKE" class="button">MySQL LIKE</a>
+                <a href="?db=mysql&process=COUNT" class="button">MySQL COUNT <b><?php echo $recordLimit; ?></b> Data</a>
             </td>
             <td>
-                <a href="?db=pgsql&process=LIKE" class="buttonp">PostgreSQL LIKE</a>
+                <a href="?db=pgsql&process=COUNT" class="buttonp">PostgreSQL COUNT <b><?php echo $recordLimit; ?></b> Data</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="?db=mysql&process=LIKE" class="button">MySQL LIKE <?php echo $recordLimit; ?> Data</a>
+            </td>
+            <td>
+                <a href="?db=pgsql&process=LIKE" class="buttonp">PostgreSQL LIKE <?php echo $recordLimit; ?> Data</a>
             </td>
         </tr>
 
