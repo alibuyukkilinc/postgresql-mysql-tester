@@ -3,7 +3,7 @@
 #MYSQL CONNECTION SETTINGS
 $host = 'localhost';
 $port = '3306';
-$dbname = 'test';
+$dbname = 'ats';
 $user = 'root';
 $pass = '';
 
@@ -33,12 +33,12 @@ try {
 
 
 #POSTGRESQL CONNECTION
-try {
-  $pgvt = new PDO("pgsql:host={$phost};port={$pport};dbname={$pdbname};user={$puser};password={$ppass};");
-  $pgvt->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-} catch ( PDOException $e ){
-    print $e->getMessage();
-} //try x
+// try {
+//   $pgvt = new PDO("pgsql:host={$phost};port={$pport};dbname={$pdbname};user={$puser};password={$ppass};");
+//   $pgvt->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+// } catch ( PDOException $e ){
+//     print $e->getMessage();
+// } //try x
 
 
 #PURE SQL MAKER
@@ -53,7 +53,7 @@ function sql(&$vt,$sql){
 #MSSQL ADD DATA
 function mssqlAddData(&$vt, $data){
 
-    $sql = "INSERT INTO {$data['tablo']} ";
+    $sql = "INSERT INTO {$data['table']} ";
     $execute_array = array();
     $i = 1;
     $sqlBefore = "";
@@ -103,7 +103,7 @@ function mssqlAddData(&$vt, $data){
 #MYSQL ADD DATA
 function mysqlAddData(&$vt, $data){
 
-    $sql = "INSERT INTO {$data['tablo']} ";
+    $sql = "INSERT INTO {$data['table']} ";
     $execute_array = array();
     $i = 1;
     $sqlBefore = "";
@@ -153,7 +153,7 @@ function mysqlAddData(&$vt, $data){
 #POSTGRESQL ADD DATA
 function postgreSqlAddData(&$vt, $data){
 
-    $sql = "INSERT INTO {$data['tablo']} ";
+    $sql = "INSERT INTO {$data['table']} ";
     $execute_array = array();
     $i = 1;
     $sqlBefore = "";
@@ -220,8 +220,8 @@ function generateRandomString($length = 10) {
 
 #----------------------------------------------------------------------------------------#
 
-#WHICH ACTIVE DATABASE
-$mysql  = false;
+#WHICH ACTIVE DATABASE (IF THİS MANUALY OR SEND GET PARAMS AUTOMATIC)
+$mysql  = true;
 $ms     = false;
 $pgsql  = false;
 
@@ -240,13 +240,23 @@ if(isset($_GET['db'])){
 }
 
 #PROCESS YOU CAN CHANGE (INSERT,SUM,COUNT,LIKE)
-$process = 'COUNT';
+$process = 'SUM';
+
+if(isset($_GET['process'])){
+    $process = $_GET['process'];
+}
 $db = '';
 
 $showDetails = true;
 
-#HOW MANY DATA SHOULD ADD
-$recordCount = 1;
+#HOW MANY DATA SHOULD ADD (100)
+$recordCount = 100;
+
+
+#DONT MAKE LOOP
+if($process != 'INSERT'){
+    $recordCount = 1;
+}
 
 #DATA LIMIT
 $recordLimit = 1;
@@ -267,7 +277,7 @@ $os = [
 
 for($i=0; $i < $recordCount; $i++){
     $data = [
-        'tablo' => '[TEST].[dbo].[data_table]',
+        'table' => '[TEST].[dbo].[data_table]',
         'add' => [
             'user_id'  => rand(1,99999),
             'admin_id'   => rand(1,99999),
@@ -304,7 +314,7 @@ for($i=0; $i < $recordCount; $i++){
         $db = 'MYSQL';
 
         if($process == 'INSERT'){
-            $data['tablo'] = 'data_table';
+            $data['table'] = 'data_table';
             $durum2 = mysqlAddData($myvt, $data);
         }
 
@@ -329,7 +339,7 @@ for($i=0; $i < $recordCount; $i++){
 
 
         if($process == 'INSERT'){
-            $data['tablo'] = 'data_table';
+            $data['table'] = 'data_table';
             $durum3 = postgreSqlAddData($pgvt, $data);
         }
         
@@ -410,7 +420,7 @@ if($showDetails == true){
     }
   
     $data = [
-       'tablo' =>  'analysis_result',
+       'table' =>  'analysis_result',
        'add' => [
             'queryCounts' =>$recordCount,
             'time' => floatval($lastTime),
@@ -420,7 +430,7 @@ if($showDetails == true){
        ]
     ];
 
-    $durum4 = mysqlAddData($pgvt, $data);
+    $durum4 = mysqlAddData($myvt, $data);
  
 }
 
@@ -437,6 +447,49 @@ if($showDetails == true){
 <body>
 
 <div class="centered">
+    <br>
+    <table align="center">
+        <tr>
+            <td>
+                <a href="?db=mysql&process=INSERT" class="button">MySQL INSERT <?php echo $recordCount; ?> Data</a>
+            </td>
+            <td>
+                <a href="?db=pgsql&process=INSERT" class="buttonp">PostgreSQL INSERT <?php echo $recordCount; ?> Data</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="?db=mysql&process=SUM" class="button">MySQL SUM</a>
+            </td>
+            <td>
+                <a href="?db=pgsql&process=SUM" class="buttonp">PostgreSQL SUM</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="?db=mysql&process=COUNT" class="button">MySQL COUNT</a>
+            </td>
+            <td>
+                <a href="?db=pgsql&process=COUNT" class="buttonp">PostgreSQL COUNT</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="?db=mysql&process=LIKE" class="button">MySQL LIKE</a>
+            </td>
+            <td>
+                <a href="?db=pgsql&process=LIKE" class="buttonp">PostgreSQL LIKE</a>
+            </td>
+        </tr>
+
+        
+    </table>
+</div>
+
+<div class="centered">
     <?php echo $content; ?>
 </div>
 
@@ -448,7 +501,35 @@ if($showDetails == true){
         padding: 5px;
         padding-bottom: 25px;
         text-align: center;
+        margin-top: 33px;
     }
+
+    .button {
+        background-color: #dd9c1f; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        width:233px;
+    }
+
+    .buttonp {
+        background-color: #af4ca4; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        width:233px;
+    }
+
 </style>
     <script>    
 
