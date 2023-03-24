@@ -410,7 +410,7 @@ if($showDetails == true){
     }
   
     $data = [
-       'tablo' =>  'analizyap',
+       'tablo' =>  'analysis_result',
        'add' => [
             'queryCounts' =>$recordCount,
             'time' => floatval($lastTime),
